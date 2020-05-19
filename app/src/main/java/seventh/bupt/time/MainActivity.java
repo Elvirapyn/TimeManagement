@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -37,17 +38,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     //三个Fragment对象
     private CalendarView calView;
-    private tomato_timing tom;
     private personal_center per;
 
     //存放Fragment对象
     private FrameLayout frameLayout;
     //每个选项的控件定义
     private RelativeLayout cal_rl;
-    private RelativeLayout tom_rl;
     private RelativeLayout per_rl;
     private TextView cal_tv;
-    private TextView tom_tv;
     private TextView per_tv;
 
     //定义fragmentManeger对象管理器
@@ -107,13 +105,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     //初始化控件
     private void initView() {
         cal_tv =(TextView) findViewById(R.id.cal_tv);
-        tom_tv =(TextView) findViewById(R.id.tom_tv);
         per_tv=(TextView) findViewById(R.id.per_tv);
         cal_rl=(RelativeLayout) findViewById(R.id.cal_rl);
-        tom_rl=(RelativeLayout) findViewById(R.id.tom_rl);
         per_rl=(RelativeLayout) findViewById(R.id.per_rl);
         cal_rl.setOnClickListener(MainActivity.this);
-        tom_rl.setOnClickListener(MainActivity.this);
         per_rl.setOnClickListener(MainActivity.this);
     }
     //底部导航栏的点击
@@ -123,14 +118,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.cal_rl:
                 Choice_menu(0);
                 break;
-            case R.id.tom_rl:
+            case R.id.per_rl:
                 Choice_menu(1);
                 break;
-            case R.id.per_rl:
-                Choice_menu(2);
-                break;
             default:
-                    break;
+                break;
         }
     }
 
@@ -150,16 +142,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
                 break;
             case 1:
-                //若tom为空，创建一个并添加到界面上
-                if(tom==null){
-                    tom = new tomato_timing();
-                    fragmentTransaction.add(R.id.content,tom);
-                }else{
-                    //不为空，显示
-                    fragmentTransaction.show(tom);
-                }
-                break;
-            case 2:
                 //若per为空，创建一个并添加到界面上
                 if(per==null){
                     per = new personal_center();
@@ -176,9 +158,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private void hindFragments(FragmentTransaction fragmentTransaction) {
         if(calView !=null){
             fragmentTransaction.hide(calView);
-        }
-        if(tom !=null){
-            fragmentTransaction.hide(tom);
         }
         if(per != null){
             fragmentTransaction.hide(per);
@@ -280,10 +259,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 conflictDialog.setMessage("时间上有冲突啦！请重新选择！");
                 conflictDialog.setPositiveButton("确定", null);
                 final AlertDialog alertConflictDialog = conflictDialog.create();
-                //添加成功的对话框
-                AlertDialog.Builder addSuccessDialog = new AlertDialog.Builder(MainActivity.this);
-                addSuccessDialog.setMessage("添加成功啦！开启你的时间管理之旅吧！");
-                final AlertDialog alertSuccessDialog = addSuccessDialog.create();
 
                 String is_notify;        //是否闹钟提醒
                 if (cb.isChecked()) {
@@ -384,7 +359,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         dbAdapter.insert(transaction);
                     }
                     dialog.dismiss();
-                    alertSuccessDialog.show();
+                    Toast.makeText(MainActivity.this, "添加成功啦！！",Toast.LENGTH_LONG).show();
                 }
                 //有冲突弹出提示框
                 if(conflictflag==1){

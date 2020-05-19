@@ -29,9 +29,9 @@ public class CalendarView extends  Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.calendar,container,false);
-       return view;
-        }
+        View view = inflater.inflate(R.layout.calendar,container,false);
+        return view;
+    }
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);

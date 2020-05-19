@@ -26,4 +26,15 @@ public class NormalTransaction {
 
         return result;
     }
+
+    public String backupData() {
+        String result = "";
+        result += this.description_ + "\n";
+        result += this.transactionDate_ + "\n";
+        result += this.isNotify_ + "\n";
+        result += this.startTime_ + "\n";
+        result += this.endTime_+"\n";
+
+        return result;
+    }
 }
