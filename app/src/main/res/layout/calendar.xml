@@ -45,25 +45,10 @@
             android:gravity="center">
             <TextView
                 style="@style/cal_time"
-                android:text="00:00" />
-            <TextView
-                style="@style/cal_time"
-                android:text="01:00"/>
-            <TextView
-                style="@style/cal_time"
-                android:text="02:00" />
-            <TextView
-                style="@style/cal_time"
-                android:text="03:00" />
-            <TextView
-                style="@style/cal_time"
-                android:text="04:00" />
-            <TextView
-                style="@style/cal_time"
                 android:text="05:00" />
             <TextView
                 style="@style/cal_time"
-                android:text="06:00" />
+                android:text="06:00"/>
             <TextView
                 style="@style/cal_time"
                 android:text="07:00" />
@@ -115,6 +100,21 @@
             <TextView
                 style="@style/cal_time"
                 android:text="23:00" />
+            <TextView
+                style="@style/cal_time"
+                android:text="0:00" />
+            <TextView
+                style="@style/cal_time"
+                android:text="1:00" />
+            <TextView
+                style="@style/cal_time"
+                android:text="2:00" />
+            <TextView
+                style="@style/cal_time"
+                android:text="3:00" />
+            <TextView
+                style="@style/cal_time"
+                android:text="4:00" />
         </LinearLayout>
         <View
             android:layout_width="1dp"

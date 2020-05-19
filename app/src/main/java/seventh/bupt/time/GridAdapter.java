@@ -127,7 +127,13 @@ public class GridAdapter extends BaseAdapter {
         System.out.println("DURATION"+duration);
         float caculatedHeight = (float)parentHeight * duration / 24;//获取到相对的高度
         int bias=(position/7)*3000/24;
-        float topPadding= ((float)60.0 * startHour + startMinute)/(24 * 60) * 4200-(float)bias;
+        float topPadding=0;
+        if(startHour>=5&&startHour<=23) {
+           topPadding = ((float) 60.0 * (startHour-5)+ startMinute) / (24 * 60) * 4200 - (float) bias;
+        }
+        else if(startHour<5) {
+            topPadding = ((float) 60.0 * (startHour+19) + startMinute) / (24 * 60) * 4200 - (float) bias;
+        }
         // System.out.println("starthour="+startHour);
         //System.out.println("endhour="+endHour);
 
