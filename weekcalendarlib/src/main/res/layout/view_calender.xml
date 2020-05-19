@@ -64,7 +64,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/my_calendar_day_padding_vertical"
-        android:paddingTop="@dimen/my_calendar_day_padding_vertical" />
+        android:paddingTop="@dimen/my_calendar_day_padding_vertical"
+        android:layout_marginLeft="35dp"/>
 
 </LinearLayout>
 
