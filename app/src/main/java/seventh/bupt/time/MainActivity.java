@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     /*
@@ -67,6 +69,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private EditText lastDays;
     // 定义显示时间控件
     private Calendar calendar; // 通过Calendar获取系统时间
+
+    private GridAdapter curAdapter;//获取当前的gridAdapter
 
 
     @Override
@@ -136,6 +140,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if(calView ==null){
                     calView = new CalendarView();
                     fragmentTransaction.add(R.id.content, calView);
+                    //curAdapter=calView.getGridAdapter();
                 }else{
                     //不为空，显示
                     fragmentTransaction.show(calView);
@@ -356,7 +361,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if(conflictflag==0){
                     for(int i=0;i<dateList.size();i++){
                         NormalTransaction transaction = new NormalTransaction(dateList.get(i), is_notify, description, start_time, end_time);
-                        dbAdapter.insert(transaction);
+                        dbAdapter.insert(transaction);//在这里添加数据，按理说应该调用gridadapter中的东西
+
+                        curAdapter=calView.getGridAdapter();
+                        curAdapter.notifyDataSetChanged();
+                        NormalTransaction[] new_tasks=dbAdapter.queryAllData();
+                        ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
+                        curAdapter.setTaskList(arrayList);
+
                     }
                     dialog.dismiss();
                     Toast.makeText(MainActivity.this, "添加成功啦！！",Toast.LENGTH_LONG).show();
