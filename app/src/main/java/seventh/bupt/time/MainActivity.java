@@ -1,11 +1,14 @@
 package seventh.bupt.time;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import seventh.bupt.time.Alarm.AlarmService;
+import seventh.bupt.time.Alarm.Todo;
+
 import com.loonggg.weekcalendar.view.WeekCalendar;
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     /*
@@ -72,6 +79,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private GridAdapter curAdapter;//获取当前的gridAdapter
 
+    private final String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         dbAdapter = new DBAdapter(MainActivity.this);
         dbAdapter.open();
 
+        /*
+            wqm
+            启动时从数据库中读入数据
+        */
+        loadDataFromDatabase();
        /* WeekCalendar weekCalendar=(WeekCalendar)findViewById(R.id.week_calendar);
         String curDay=weekCalendar.getTheDayOfSelected();*/
 
@@ -365,6 +378,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     for(int i=0;i<dateList.size();i++){
                         NormalTransaction transaction = new NormalTransaction(dateList.get(i), is_notify, description, start_time, end_time);
                         dbAdapter.insert(transaction);//在这里添加数据，按理说应该调用gridadapter中的东西
+                        /*
+                            wqm
+                            为新建的事务创建提醒
+                         */
+                        Todo todo = new Todo();
+                        todo.setCode(0);
+                        todo.setTodo(transaction.description_);
+                        todo.setDate(transaction.transactionDate_);
+                        todo.setTime(transaction.startTime_);
+                        setService(todo,true);
 
                         curAdapter=calView.getGridAdapter();
                         curAdapter.notifyDataSetChanged();
@@ -423,6 +446,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     //日期选择器
+    @SuppressLint("NewApi")
     public void selectDate(View v) {
         int themeResId = 2;
         DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, themeResId, new DatePickerDialog.OnDateSetListener() {
@@ -523,4 +547,52 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         return false;
     }
 
+    /*
+        wqm:
+        加载数据库中信息，恢复alarm服务
+     */
+    public void setService(Todo todo,boolean isSetAlarm){
+        Intent intentToAlarmService = new Intent(this, AlarmService.class);
+        intentToAlarmService.putExtra("todo", todo.getTodo());
+        intentToAlarmService.putExtra("date", todo.getDate());
+        intentToAlarmService.putExtra("time", todo.getTime());
+        intentToAlarmService.putExtra("remindTypeCode", todo.getCode());
+        intentToAlarmService.putExtra("isSetAlarm", isSetAlarm);
+
+        this.startService(intentToAlarmService);
+        Log.d(TAG, "onClick: " + "添加成功");
+        Log.d(TAG,"Date:"+intentToAlarmService.getStringExtra("date"));
+    }
+
+    public void loadDataFromDatabase() {
+        Log.d(TAG, "查询数据库");
+
+
+        NormalTransaction[] noramalTasks = dbAdapter.queryNotify();
+        //遍历normalTasks 启动alarm
+        //TEST DATA  此处应改为下方从SQL数据库查询数据
+        Todo todo;
+        if(noramalTasks!=null) {
+            for (NormalTransaction cursor : noramalTasks) {
+                todo = new Todo();
+                todo.setTodo(cursor.description_);
+                todo.setDate(cursor.transactionDate_);
+                todo.setTime(cursor.startTime_);
+                todo.setCode(0);
+                Log.d(TAG, "load(): " + todo.getTodo());
+                //todoLists.add(todo);
+                setService(todo, true);
+            }
+        }
+    }
+
+    /*
+        //删除alarm时需要执行的操作，添加在数据库的delete语句后面 transaction为要删除的对象
+        Todo todo = new Todo();
+        todo.setCode(0);
+        todo.setTodo(transaction.description_);
+        todo.setDate(transaction.transactionDate_);
+        todo.setTime(transaction.startTime_);
+        setService(todo,false);
+     */
 }

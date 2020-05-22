@@ -41,8 +41,6 @@ public class CalendarView extends  Fragment {
     //WeekCalendar weekCalendar;//自定义日历控件
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calendar, container, false);
@@ -70,7 +68,7 @@ public class CalendarView extends  Fragment {
         //下面的一个任务就是获取当前日期所在的一周内的日期
 
 
-        //  gridAdapter.notifyDataSetChanged();
+      //  gridAdapter.notifyDataSetChanged();
        /* NormalTransaction[] noramalTasks = dbAdapter1.queryAllData();//这一句是获取所有数据的
         NormalTransaction a = new NormalTransaction("2017-07-07 ", "N", "学英语", "6:00", "8:00");
         NormalTransaction b = new NormalTransaction("2017-07-07 ", "N", "学数学", "10:00", "11:00");
@@ -133,8 +131,8 @@ public class CalendarView extends  Fragment {
         NormalTransaction c = new NormalTransaction("2017-07-08 ", "N", "学语文", "9:00", "11:00");
         NormalTransaction d = new NormalTransaction("2017-07-09 ", "N", "学音乐", "10:00", "11:00");
         ArrayList<HashMap<String, Object>> taskList_ = new ArrayList<HashMap<String, Object>>();
-        if(normalTasks!=null)
-        for (int i = 0; i < normalTasks.length; i++) {
+        if(normalTasks!=null) {
+            for (int i = 0; i < normalTasks.length; i++) {
 
             String date = normalTasks[i].transactionDate_;
             String description = normalTasks[i].description_;
@@ -151,6 +149,7 @@ public class CalendarView extends  Fragment {
 
             // gridAdapter.notifyDataSetChanged();//实时监控数据变化
 
+            }
         }
 
                    return taskList_;
