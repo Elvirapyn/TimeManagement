@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -86,6 +87,7 @@ public class GridAdapter extends BaseAdapter {
     }
 
 
+    @SuppressLint("NewApi")
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
 

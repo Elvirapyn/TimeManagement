@@ -86,26 +86,24 @@ public class CalendarView extends  Fragment {
         NormalTransaction c = new NormalTransaction("2017-07-08 ", "N", "学语文", "9:00", "11:00");
         NormalTransaction d = new NormalTransaction("2017-07-09 ", "N", "学音乐", "10:00", "11:00");
         ArrayList<HashMap<String, Object>> taskList_ = new ArrayList<HashMap<String, Object>>();
-        for (int i = 0; i < normalTasks.length; i++) {
+        if(normalTasks!=null) {
+            for (int i = 0; i < normalTasks.length; i++) {
 
-            String date = normalTasks[i].transactionDate_;
-            String description = normalTasks[i].description_;
-            String startDatetime = normalTasks[i].transactionDate_ + normalTasks[i].startTime_;
-            //Timestamp time = Timestamp.valueOf("2017-06-07 17:00:00");
-            HashMap<String, Object> date_to_task = new HashMap<>();
-            //date_to_task.put("date",date);
-            //date_to_task.put(startDatetime,description);
-            date_to_task.put("taskList" + i, (Object) normalTasks[i]);
-            taskList_.add(date_to_task);//这是获取到了整个的时间--任务map
+                String date = normalTasks[i].transactionDate_;
+                String description = normalTasks[i].description_;
+                String startDatetime = normalTasks[i].transactionDate_ + normalTasks[i].startTime_;
+                //Timestamp time = Timestamp.valueOf("2017-06-07 17:00:00");
+                HashMap<String, Object> date_to_task = new HashMap<>();
+                //date_to_task.put("date",date);
+                //date_to_task.put(startDatetime,description);
+                date_to_task.put("taskList" + i, (Object) normalTasks[i]);
+                taskList_.add(date_to_task);//这是获取到了整个的时间--任务map
 
+                // gridAdapter.notifyDataSetChanged();//实时监控数据变化
 
-
-
-            // gridAdapter.notifyDataSetChanged();//实时监控数据变化
-
+            }
         }
-
-                   return taskList_;
+        return taskList_;
     }
 
 

@@ -1,5 +1,6 @@
 package seventh.bupt.time;
 
+import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ public class CustomTimePickerDialog extends TimePickerDialog
         // override and do nothing
     }
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
