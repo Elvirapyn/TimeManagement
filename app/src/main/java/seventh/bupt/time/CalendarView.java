@@ -41,6 +41,8 @@ public class CalendarView extends  Fragment {
     //WeekCalendar weekCalendar;//自定义日历控件
 
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calendar, container, false);
@@ -68,7 +70,7 @@ public class CalendarView extends  Fragment {
         //下面的一个任务就是获取当前日期所在的一周内的日期
 
 
-      //  gridAdapter.notifyDataSetChanged();
+        //  gridAdapter.notifyDataSetChanged();
        /* NormalTransaction[] noramalTasks = dbAdapter1.queryAllData();//这一句是获取所有数据的
         NormalTransaction a = new NormalTransaction("2017-07-07 ", "N", "学英语", "6:00", "8:00");
         NormalTransaction b = new NormalTransaction("2017-07-07 ", "N", "学数学", "10:00", "11:00");
@@ -131,30 +133,28 @@ public class CalendarView extends  Fragment {
         NormalTransaction c = new NormalTransaction("2017-07-08 ", "N", "学语文", "9:00", "11:00");
         NormalTransaction d = new NormalTransaction("2017-07-09 ", "N", "学音乐", "10:00", "11:00");
         ArrayList<HashMap<String, Object>> taskList_ = new ArrayList<HashMap<String, Object>>();
-        if(normalTasks!=null) {
+        if (normalTasks != null) {
             for (int i = 0; i < normalTasks.length; i++) {
 
-            String date = normalTasks[i].transactionDate_;
-            String description = normalTasks[i].description_;
-            String startDatetime = normalTasks[i].transactionDate_ + normalTasks[i].startTime_;
-            //Timestamp time = Timestamp.valueOf("2017-06-07 17:00:00");
-            HashMap<String, Object> date_to_task = new HashMap<>();
-            //date_to_task.put("date",date);
-            //date_to_task.put(startDatetime,description);
-            date_to_task.put("taskList" + i, (Object) normalTasks[i]);
-            taskList_.add(date_to_task);//这是获取到了整个的时间--任务map
+                String date = normalTasks[i].transactionDate_;
+                String description = normalTasks[i].description_;
+                String startDatetime = normalTasks[i].transactionDate_ + normalTasks[i].startTime_;
+                //Timestamp time = Timestamp.valueOf("2017-06-07 17:00:00");
+                HashMap<String, Object> date_to_task = new HashMap<>();
+                //date_to_task.put("date",date);
+                //date_to_task.put(startDatetime,description);
+                date_to_task.put("taskList" + i, (Object) normalTasks[i]);
+                taskList_.add(date_to_task);//这是获取到了整个的时间--任务map
 
-
+            }
 
 
             // gridAdapter.notifyDataSetChanged();//实时监控数据变化
 
-            }
         }
+        return taskList_;
 
-                   return taskList_;
     }
-
 
     public GridAdapter getGridAdapter() {
         return gridAdapter;
