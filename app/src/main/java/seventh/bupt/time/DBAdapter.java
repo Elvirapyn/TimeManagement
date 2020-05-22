@@ -80,8 +80,10 @@ public class DBAdapter {
         return db.delete(DB_TABLE, null, null);
     }
 
-    public long deleteOneData(String date){
-        return db.delete(DB_TABLE, KEY_Date + "=" + date, null);
+    public long deleteOneData(String date,String startTime){
+        return db.delete(DB_TABLE,
+                "date=? AND startTime=?",
+                new String[] {date,startTime});
     }
 
     public NormalTransaction[] queryAllData() {
@@ -90,7 +92,15 @@ public class DBAdapter {
     }
 
     public NormalTransaction[] queryDateData(String date) {
-        Cursor results = db.rawQuery("select * from normalTransaction where date=?",new String[]{date});
+        Cursor results = db.rawQuery("select * from normalTransaction where date=?; ",new String[]{date});
+        return ConvertToTransaction(results);
+    }
+    public NormalTransaction[] queryWeekData(String[] date) {
+        Cursor results = db.rawQuery("select * from normalTransaction where date=?or date=?or date=?or date=?or date=?or date=?or date=?;"
+                ,new String[]{date[0],date[1],date[2],date[3],date[4], date[5],date[6]});
+        for(int i=0;i<7;i++)
+        System.out.println("date[0]="+date[i]);
+
         return ConvertToTransaction(results);
     }
 

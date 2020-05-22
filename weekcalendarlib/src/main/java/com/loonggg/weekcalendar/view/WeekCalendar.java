@@ -19,15 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-
 import com.loonggg.weekcalendar.R;
 import com.loonggg.weekcalendar.base.SimpleBaseAdapter;
 import com.loonggg.weekcalendar.entity.CalendarData;
 import com.loonggg.weekcalendar.utils.WeekCalendarUtil;
-
+//import time.
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +58,8 @@ public class WeekCalendar extends LinearLayout {
     private Drawable daysSelectedBackground, nextArrowBg, preArrowBg, cornerMarkBg;
     private List<String> selectDateList = null;
     private OnCurrentMonthDateListener onCurrentMonthDateListener;
-
+//自定义包中的信息
+    //private GridAdapter curAdapter;//获取当前的gridAdapter
     public WeekCalendar(Context context) {
         super(context);
         init(context, null);
@@ -245,6 +246,7 @@ public class WeekCalendar extends LinearLayout {
         mRvDay.removeViewAt(0);
     }
 
+
     /**
      * 显示上一个星期/月的数据
      */
@@ -372,6 +374,11 @@ public class WeekCalendar extends LinearLayout {
                 public void onClick(View v) {
                     theDayOfSelected = datas.get(position);
                     theDayForShow = datas.get(position);
+                    /*curAdapter=calView.getGridAdapter();
+                    curAdapter.notifyDataSetChanged();
+                    NormalTransaction[] new_tasks=dbAdapter.queryAllData();
+                    ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
+                    curAdapter.setTaskList(arrayList);*/
                     notifyDataSetChanged();
                     if (listener != null) {
                         listener.onDateClick(getTheDayOfSelected());
@@ -418,7 +425,7 @@ public class WeekCalendar extends LinearLayout {
      *
      * @return
      */
-    private String getTheDayOfSelected() {
+    public String getTheDayOfSelected() {
         if (theDayOfSelected != null) {
             String sYear = String.valueOf(theDayOfSelected.year);
             String sMonth = String.valueOf(theDayOfSelected.month);

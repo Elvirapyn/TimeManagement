@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
+import com.loonggg.weekcalendar.view.WeekCalendar;
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     /*
     郭正鑫
@@ -88,6 +88,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //打开数据库
         dbAdapter = new DBAdapter(MainActivity.this);
         dbAdapter.open();
+
+       /* WeekCalendar weekCalendar=(WeekCalendar)findViewById(R.id.week_calendar);
+        String curDay=weekCalendar.getTheDayOfSelected();*/
 
     }
     @Override
@@ -387,7 +390,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         int hour1 = Integer.parseInt(time1.substring(0,2));
         int minite1 = Integer.parseInt(time1.substring(3,5));
         int hour2 = Integer.parseInt(time2.substring(0,2));
-        int minite2 = Integer.parseInt(time1.substring(3,5));
+        int minite2 = Integer.parseInt(time2.substring(3,5));
         if(hour1>hour2)return 1;
         else if(hour1==hour2) {
             if (minite1 > minite2) return 1;
@@ -446,7 +449,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     //开始时间选择器
     public void setstartTimes(final int hour_day, final int minute) {
-        String[] name = new String[]{"00", "30"};
+        String[] name = new String[]{"00", "05","10","15","20","25","30","35","40","45","50","55"};
         BasisTimesUtils.showTimerPickerDialog(MainActivity.this, 2, "请选择时间", hour_day, minute, true,
                 new BasisTimesUtils.OnTimerPickerListener() {
                     @Override
@@ -472,7 +475,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     public void onCancel() {
 
                     }
-                }, 30, name);
+                }, 5, name);
     }
 
     //结束时间选择器
@@ -483,7 +486,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         conflictDialog.setPositiveButton("确定", null);
         final AlertDialog alertdialog= conflictDialog.create();
 
-        String[] name = new String[]{"00", "30"};
+        String[] name = new String[]{"00", "05","10","15","20","25","30","35","40","45","50","55"};
         BasisTimesUtils.showTimerPickerDialog(MainActivity.this, 2, "请选择时间", hour_day, minute, true,
                 new BasisTimesUtils.OnTimerPickerListener() {
                     @Override
@@ -511,7 +514,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     public void onCancel() {
 
                     }
-                }, 30, name);
+                }, 5, name);
     }
 
     //检测结束时间是否符合要求

@@ -165,7 +165,7 @@ public class WeekCalendarUtil {
      * <p/>
      * 如果没有数据，返回0
      */
-    public static int getTheWeekPosition(Map<Integer, List> map, CalendarData day) {
+    public static int getTheWeekPosition(Map<Integer, List> map, CalendarData day) {  //返回星期的位置
         int position =-1;
         for (Map.Entry<Integer, List> entry : map.entrySet()) {
             position++;
