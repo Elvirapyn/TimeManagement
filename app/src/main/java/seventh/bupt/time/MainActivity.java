@@ -564,7 +564,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Log.d(TAG, "查询数据库");
 
 
-        NormalTransaction[] noramalTasks = dbAdapter.queryAllData();
+        NormalTransaction[] noramalTasks = dbAdapter.queryNotify();
         //遍历normalTasks 启动alarm
         //TEST DATA  此处应改为下方从SQL数据库查询数据
         Todo todo;
@@ -580,48 +580,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 setService(todo, true);
             }
         }
-        /*
-        Todo todo = new Todo();
-        todo.setTodo("ass");
-        todo.setDate("2020-5-4");
-        todo.setTime("23:44");
-        todo.setCode(0);
-
-        Intent intentToAlarmService = new Intent(this, AlarmService.class);
-        intentToAlarmService.putExtra("todo", todo.getTodo());
-        intentToAlarmService.putExtra("date", todo.getDate());
-        intentToAlarmService.putExtra("time", todo.getTime());
-        intentToAlarmService.putExtra("remindTypeCode", todo.getCode());
-        //TEST：删除
-        //intentToAlarmService.putExtra("isSetAlarm", false);
-        //TEST：定时提示
-        this.startService(intentToAlarmService);
-        Log.d(TAG, "onClick: " + "添加成功");
-        Log.d(TAG,"Date:"+intentToAlarmService.getStringExtra("date"));
-
-        //TEST：振动+响铃+弹窗
-        //Intent intent = new Intent(this, AlertActivity.class);
-        //this.startActivity(intent);
-
-        // 从SQLite数据库中查询数据
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(this, "TODO", null, 1);
-        SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
-        // 遍历查询所有todo对象，
-        String sql = "select * from todo";
-        Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
-        Todo todo;
-        while (cursor.moveToNext()) {
-            todo = new Todo();
-            todo.setTodo(cursor.getString(cursor.getColumnIndex("title")));
-            todo.setDate(cursor.getString(cursor.getColumnIndex("date")));
-            todo.setTime(cursor.getString(cursor.getColumnIndex("time")));
-            todo.setCode(cursor.getInt(cursor.getColumnIndex("code")));
-            Log.d(TAG, "load(): " + todo.getTodo());
-            todoLists.add(todo);
-        }
-        sqLiteDatabase.close();
-        */
     }
 
     /*

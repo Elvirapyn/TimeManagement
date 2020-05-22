@@ -94,6 +94,11 @@ public class DBAdapter {
         return ConvertToTransaction(results);
     }
 
+    public NormalTransaction[] queryNotify() {
+        Cursor results = db.rawQuery("select * from normalTransaction where isNotify=?",new String[]{"Y"});
+        return ConvertToTransaction(results);
+    }
+
     public long updateOneData(String date, NormalTransaction transaction) {
         ContentValues updateValues = new ContentValues();
         updateValues.put(KEY_Date, transaction.transactionDate_);
