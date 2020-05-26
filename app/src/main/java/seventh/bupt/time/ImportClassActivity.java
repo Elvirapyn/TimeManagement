@@ -256,14 +256,14 @@ public class ImportClassActivity extends AppCompatActivity {
 
             }
             //使得课表更新后立刻在界面上更新,需要测试
-            /*WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
+            WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
             GridView gridView=findViewById(com.loonggg.weekcalendar.R.id.gridview);
             String dayofSelected=weekCalendar.getTheDayOfSelected();
             String[] weekDate=CalendarView.getWeekofDate(dayofSelected);
             NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
             ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
             GridAdapter gridAdapter = new GridAdapter(this, arrayList, LayoutInflater.from(this));
-            gridView.setAdapter(gridAdapter);*/
+            gridView.setAdapter(gridAdapter);
 
         }
 
@@ -284,7 +284,7 @@ public class ImportClassActivity extends AppCompatActivity {
     }
     /*取得指定日期所在周的第一天*/
     public Calendar getFirstDayOfWeek(Date date) {
-        java.text.SimpleDateFormat sdf = new SimpleDateFormat("yyyyMdd");
+        java.text.SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Calendar c = new GregorianCalendar();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.setTime(date);
@@ -294,7 +294,7 @@ public class ImportClassActivity extends AppCompatActivity {
     /* 给出教学周周数，学期开始日期，周几，返回日期*/
     private String weekToDate(int week,String start_date,int day){
         // String start_date = "2020-02-24";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-M-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = format.parse(start_date);
@@ -309,7 +309,7 @@ public class ImportClassActivity extends AppCompatActivity {
         //System.out.println(calendar.get(Calendar.WEEK_OF_YEAR));
         Calendar monsday=getFirstDayOfWeek("2020",start_num+week-1);
         monsday.add(Calendar.DAY_OF_YEAR,day-1);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String result = sdf.format(monsday.getTime());
         return result;
     }

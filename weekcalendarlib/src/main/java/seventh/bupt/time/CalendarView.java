@@ -122,7 +122,7 @@ public class CalendarView extends  Fragment {
           //System.out.println("年"+cal.getTime());
           //System.out.println("月"+curDate.getMonth()+1);
           //System.out.println("月"+curDate.getDate());
-          DateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd", Locale.ENGLISH);
+          DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
           cal.add(Calendar.DATE,-weekday-1);//获取当前周的第一天
           weekofDate[0]=dateFormat.format(cal.getTime());
           for(int i=0;i<7;i++){

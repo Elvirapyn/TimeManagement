@@ -366,13 +366,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         }
                     }
                 }
+
                 //检测是否有冲突
                 for(int i=0;i<dateList.size();i++){
+                    String dateListItem = dateList.get(i);
+                    String num[] = dateListItem.split("-");
+                    String newdateItem = num[0];
+                    if(Integer.parseInt(num[1])/10==0)newdateItem = newdateItem +"-0"+num[1];  //月份是一位数
+                    else  newdateItem = newdateItem + "-"+num[1];
+                    if(Integer.parseInt(num[2])/10==0)newdateItem = newdateItem +"-0"+num[2];  //月份是一位数
+                    else  newdateItem = newdateItem + "-"+num[2];
+                    dateList.set(i,newdateItem);
                     if(isConflict(dateList.get(i),start_time,end_time)) {
                         conflictflag=1;
                         break;
                     }
                 }
+
                 //没有冲突则插入数据库
                 if(conflictflag==0){
                     for(int i=0;i<dateList.size();i++){
