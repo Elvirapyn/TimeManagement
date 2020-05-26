@@ -1,5 +1,6 @@
 package seventh.bupt.time;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import java.io.FileReader;
 public class personal_center extends Fragment {
     Button backup;
     Button recoverData;
+    Button importClass;
     DBAdapter dbAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class personal_center extends Fragment {
     public void onStart(){
         super.onStart();
         backup = (Button) getView().findViewById(R.id.backup);
+        importClass=(Button)getView().findViewById(R.id.importClassTable);
         recoverData = (Button) getView().findViewById(R.id.recoverData);
         dbAdapter = new DBAdapter(getActivity().getApplicationContext());
         dbAdapter.open();
@@ -44,10 +47,21 @@ public class personal_center extends Fragment {
                 loadBackup();
             }
         });
+        importClass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                importClass();
+            }
+        });
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    public void importClass() {
+        Intent intent = new Intent(getActivity(), ImportClassActivity.class);
+        startActivity(intent);
     }
 
     public void createBackup() {

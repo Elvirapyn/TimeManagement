@@ -66,6 +66,110 @@
         android:paddingBottom="@dimen/my_calendar_day_padding_vertical"
         android:paddingTop="@dimen/my_calendar_day_padding_vertical"
         android:layout_marginLeft="35dp"/>
+    <!--课程表的主体部分-->
+    <!-- 滚动条 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#D3D3D3" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!-- 一天中的所有时刻 -->
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    style="@style/cal_time"
+                    android:text="05:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="06:00"/>
+                <TextView
+                    style="@style/cal_time"
+                    android:text="07:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="08:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="09:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="10:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="11:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="12:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="13:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="14:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="15:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="16:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="17:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="18:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="19:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="20:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="21:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="22:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="23:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="0:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="1:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="2:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="3:00" />
+                <TextView
+                    style="@style/cal_time"
+                    android:text="4:00" />
+            </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#D3D3D3"/>
 
+            <GridView
+                android:id="@+id/gridview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="7"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
 

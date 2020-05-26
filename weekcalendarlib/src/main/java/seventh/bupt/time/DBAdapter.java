@@ -95,6 +95,7 @@ public class DBAdapter {
         Cursor results = db.rawQuery("select * from normalTransaction where date=?; ",new String[]{date});
         return ConvertToTransaction(results);
     }
+    //根据某一周的日期获取本周内的事务
     public NormalTransaction[] queryWeekData(String[] date) {
         Cursor results = db.rawQuery("select * from normalTransaction where date=?or date=?or date=?or date=?or date=?or date=?or date=?;"
                 ,new String[]{date[0],date[1],date[2],date[3],date[4], date[5],date[6]});

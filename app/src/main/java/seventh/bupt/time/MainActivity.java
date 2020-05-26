@@ -389,10 +389,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         todo.setTime(transaction.startTime_);
                         setService(todo,true);
 
+                        //添加数据后实时更新
                         curAdapter=calView.getGridAdapter();
                         curAdapter.notifyDataSetChanged();
                         NormalTransaction[] new_tasks=dbAdapter.queryAllData();
-                        ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
+                        ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
                         curAdapter.setTaskList(arrayList);
 
                     }

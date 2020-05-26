@@ -12,17 +12,15 @@ import java.text.ParseException;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.loonggg.weekcalendar.R;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -37,8 +35,10 @@ public class GridAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private Context myContext;
     int parentHeight=4200;
-    int parentWidth=1296;
-    float maxHeight[]=new float[100];
+    int parentWidth=1296;//屏幕的长宽，到最后展示的时候要根据相关机型进行调整
+
+    float maxHeight[]=new float[100];//获取每个iter内的最后一件事务的长度，作为下一个iter的偏移量
+
     public GridAdapter(Context context,ArrayList<HashMap<String, Object>> tasks,LayoutInflater mLayoutInflater) {
         myContext = context;
         layoutInflater = mLayoutInflater;
@@ -47,18 +47,6 @@ public class GridAdapter extends BaseAdapter {
         dbAdapter = new DBAdapter(myContext);
         dbAdapter.open();
 
-        NormalTransaction a1=new NormalTransaction("2017-07-11 ","N","java学习","15:00","15:30");
-        NormalTransaction a2=new NormalTransaction("2017-07-12 ","N","神经网络学习","8:00","12:30");
-        NormalTransaction a3=new NormalTransaction("2017-07-13 ","N","写实验报告","14:00","17:00");
-        NormalTransaction a4=new NormalTransaction("2017-07-14 ","N","交周报","17:00","18:00");
-        //dbAdapter.insert(e);
-       /* dbAdapter.insert(a1);
-        dbAdapter.insert(a2);
-        dbAdapter.insert(a3);
-        dbAdapter.insert(a4);*/
-        /*dbAdapter.insert(a);
-        dbAdapter.insert(b);
-        dbAdapter.insert(c);*/
     }
 //!!!!!!!!一定注意在push前把db版本改回来
 
@@ -91,31 +79,31 @@ public class GridAdapter extends BaseAdapter {
 
         this.notifyDataSetChanged();
         ViewHolder viewHolder;//若子布局比较复杂，则可以使用viewholder来进行设计
+        //获取tasklist中的key
         String index="taskList"+position;
         NormalTransaction curTask=(NormalTransaction)taskList.get(position).get(index);
-        //NormalTransaction[] noramalTasks = dbAdapter.queryAllData();
         System.out.println("position为"+ position);
         System.out.println("date为"+curTask.transactionDate_);
-        //System.out.println("length为"+ noramalTasks.length);
         System.out.println(curTask.description_);
-   //noramalTasks[position]
+
         String description = curTask.description_;
+
+        //获取字符串中的开始时间和结束时间，小时和分钟
         Date startTime_=convertTime(curTask.startTime_);
         int startHour=startTime_.getHours();
         int startMinute=startTime_.getMinutes();
-
         Date endTime_=convertTime(curTask.endTime_);
         int endHour=endTime_.getHours();
         int endMinute=endTime_.getMinutes();
 
-        //  Date curDate=convertDate();
 
         float duration=(float)endHour-startHour+(float)(endMinute-startMinute)/60;
+        System.out.println("DURATION"+duration);
         convertView = layoutInflater.inflate(R.layout.item_grid, parent, false);
-        //convertView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         viewHolder = new ViewHolder();
         viewHolder.mTextView = convertView.findViewById(R.id.grid_item);
 
+        //这段代码用来获取控件的实际长宽，先保留，最后调试时用
         /*parent.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -133,88 +121,59 @@ public class GridAdapter extends BaseAdapter {
                     }
                 });*/
 
-
-
-
-        System.out.println("DURATION"+duration);
         float caculatedHeight = (float)parentHeight * duration / 24;//获取到相对的高度
 
-        System.out.println("调整后高度为："+caculatedHeight);
-
-        //需要选取每个iter中的最后一个元素作为偏移量
 
         float bias;
         int iterNum=position/7;//计算第几个循环
         if(position%7==6) //选取每次循环最后一个元素的高度作为下一次迭代的偏移累加高度
            maxHeight[iterNum] = caculatedHeight;
-
         if(iterNum==0)
              bias=(float)0.0;
         else
              bias=getBias(iterNum);//设置本次迭代的偏移量
 
-        /*if(position==7)
-            System.out.println("第一个迭代的最大高度为"+maxHeight[0]);
-       System.out.println("迭代+偏移量"+iterNum+" "+bias);*/
 
+        //获取和父部件顶端的距离，注意首个时间点为5:00
         float topPadding=0;
         if(startHour>=5&&startHour<=23) {
-           topPadding = ((float) 60.0 * (startHour-5)+ startMinute) / (24 * 60) * 4200 -  bias;
+           topPadding = ((float) 60.0 * (startHour-5)+ startMinute) / (24 * 60) * parentHeight -  bias;
         }
         else if(startHour<5) {
-            topPadding = ((float) 60.0 * (startHour+19) + startMinute) / (24 * 60) * 4200 - bias;
+            topPadding = ((float) 60.0 * (startHour+19) + startMinute) / (24 * 60) * parentHeight - bias;
         }
 
-        //获取和父部件顶端的距离
-        // System.out.println("调用高度"+topPadding);
-        int weekday=getWeekday(curTask.transactionDate_);
 
+        int weekday=getWeekday(curTask.transactionDate_);
         convertView.setTranslationX((weekday- position%7) *parentWidth / 7);
         convertView.setTranslationY(topPadding);
-
         convertView.setLayoutParams(new GridView.LayoutParams(parentWidth / 7, (int)caculatedHeight));
-        //System.out.println("矩阵高度"+caculatedHeight);
         convertView.setTag(viewHolder);
-            /*else {
-
-                viewHolder = (ViewHolder) convertView.getTag();
-            }*/
         viewHolder.mTextView.setText(description);
         viewHolder.mTextView.setBackgroundColor(Color.parseColor(getRandomColor(position)));
         return convertView;
-        // }
+
     }
 
+    //将string转化成date，获取小时和分钟
     public Date convertTime(String dateString) {
         Date timeDate=new Date();
         try {
             DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH); // HH 大写是24小时制
-            //dateFormat.setLenient(false);
             timeDate= dateFormat.parse(dateString);   // util类型
-            Timestamp dateTime = new Timestamp(timeDate.getTime()); // Timestamp类型, timeDate.getTime()返回一个 long 型
-            System.out.println(dateTime);
+            //Timestamp dateTime = new Timestamp(timeDate.getTime()); // Timestamp类型, timeDate.getTime()返回一个 long 型
+            //System.out.println(dateTime);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        return timeDate;
-    }
-    public Date convertDate(String dateString) {
-        Date timeDate=new Date();
-        try {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH); // hh 也可以换成 kk
-            //dateFormat.setLenient(false);
-            timeDate= dateFormat.parse(dateString);   // util类型
-            Timestamp dateTime = new Timestamp(timeDate.getTime()); // Timestamp类型, timeDate.getTime()返回一个 long 型
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
         return timeDate;
     }
 
-    public int getWeekday(String pTime) {
+
+
+    //获取字符串中的信息是周几，注意周日为0
+    public static int getWeekday(String pTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         try {
@@ -224,12 +183,12 @@ public class GridAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-        return c.get(Calendar.DAY_OF_WEEK)-1;//周日为0
+        return c.get(Calendar.DAY_OF_WEEK)-1;
     }
 
+    //获取随机颜色，后续可以改善
     public String getRandomColor(int position){
-        // int randomColor=(int) (Math.random() * 15);
-        //15种不同颜色的列表
+
         ArrayList<String> randomColor=new ArrayList<String>();
         randomColor.add("#FFE4E1");//浅粉色
         randomColor.add("#EEAEEE");//浅紫色
@@ -240,12 +199,11 @@ public class GridAdapter extends BaseAdapter {
         randomColor.add("#7FFFD4");//青色
         randomColor.add("#EEAD0E");//橙色
 
-        //return randomColor.get((int) (Math.random() * 8));
         return randomColor.get(position%8);
 
 
     }
-    public int getInitialHeight(final View convertView){
+    /*public int getInitialHeight(final View convertView){
         final int height=0;
         convertView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -259,14 +217,14 @@ public class GridAdapter extends BaseAdapter {
         });
         System.out.println("viewTree获取的高度"+height);
         return height;
-    }
+    }*/
 
+    //获取每一次迭代的偏移量
     public float getBias(int iterNum){
-     //获取每一次迭代的偏移量
+
        float bias=0;
        for(int i=iterNum-1;i>=0;i--)
            bias+=maxHeight[i];
-
         return bias;
     }
 

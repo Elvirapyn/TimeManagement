@@ -23,13 +23,23 @@ import com.loonggg.weekcalendar.R;
 import com.loonggg.weekcalendar.base.SimpleBaseAdapter;
 import com.loonggg.weekcalendar.entity.CalendarData;
 import com.loonggg.weekcalendar.utils.WeekCalendarUtil;
-//import time.
+
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import seventh.bupt.time.CalendarView;
+import seventh.bupt.time.DBAdapter;
+import seventh.bupt.time.GridAdapter;
+import seventh.bupt.time.NormalTransaction;
 
 public class WeekCalendar extends LinearLayout {
     RelativeLayout mIvPrevious;
@@ -58,6 +68,9 @@ public class WeekCalendar extends LinearLayout {
     private Drawable daysSelectedBackground, nextArrowBg, preArrowBg, cornerMarkBg;
     private List<String> selectDateList = null;
     private OnCurrentMonthDateListener onCurrentMonthDateListener;
+
+    //显示相关的内容
+    private DBAdapter dbAdapter;
 //自定义包中的信息
     //private GridAdapter curAdapter;//获取当前的gridAdapter
     public WeekCalendar(Context context) {
@@ -374,27 +387,53 @@ public class WeekCalendar extends LinearLayout {
                 public void onClick(View v) {
                     theDayOfSelected = datas.get(position);
                     theDayForShow = datas.get(position);
-                    /*curAdapter=calView.getGridAdapter();
-                    curAdapter.notifyDataSetChanged();
-                    NormalTransaction[] new_tasks=dbAdapter.queryAllData();
-                    ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
-                    curAdapter.setTaskList(arrayList);*/
                     notifyDataSetChanged();
+
+                    //wcz 设置点击weekcalendar的点击事件，可以响应日期的变化
                     if (listener != null) {
-                        listener.onDateClick(getTheDayOfSelected());
+                        dbAdapter = new DBAdapter(getContext());
+                        dbAdapter.open();
+                        String dayofSelected=listener.onDateClick(getTheDayOfSelected());
+                        GridView gridView=findViewById(R.id.gridview);
+                        String[] weekDate=CalendarView.getWeekofDate(dayofSelected);
+                        NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
+                        ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                       GridAdapter gridAdapter = new GridAdapter(getContext(), arrayList, LayoutInflater.from(getContext()));
+
+                        gridView.setAdapter(gridAdapter);
+                    }
+                    else if(listener==null){
+                        dbAdapter = new DBAdapter(getContext());
+                        dbAdapter.open();
+                        listener=new DateClick();
+                        String dayofSelected=listener.onDateClick(getTheDayOfSelected());
+                        GridView gridView=findViewById(R.id.gridview);
+                        String[] weekDate=CalendarView.getWeekofDate(dayofSelected);
+                        NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
+                        ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                        GridAdapter gridAdapter = new GridAdapter(getContext(), arrayList, LayoutInflater.from(getContext()));
+
+                        gridView.setAdapter(gridAdapter);
                     }
                 }
             });
+
             return convertView;
         }
     }
-
-
     /**
      * 点击选中日期的回调接口
      */
     public interface OnDateClickListener {
-        void onDateClick(String time);
+        String onDateClick(String time);
+    }
+
+    public class DateClick implements OnDateClickListener{
+        public String onDateClick(String time){
+
+            System.out.println("接口测试:"+time);
+            return time;
+        }
     }
 
     /**
