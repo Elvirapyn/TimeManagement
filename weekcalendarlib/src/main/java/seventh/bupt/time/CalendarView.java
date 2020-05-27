@@ -66,7 +66,6 @@ public class CalendarView extends  Fragment {
         gridAdapter = new GridAdapter(getContext(), taskList, LayoutInflater.from(getContext()));
         gridView.setAdapter(gridAdapter);
 
-
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -76,16 +75,26 @@ public class CalendarView extends  Fragment {
                 for(int i=position;i<normalTransactions.length-1;i++)
                     normalTransactions[i]=normalTransactions[i+1];
                 taskList=getArrayList(normalTransactions);
-                gridAdapter.notifyDataSetChanged();
-                /*NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekofdate);
-                ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
-                curAdapter.setTaskList(arrayList);*/
+                //gridAdapter.notifyDataSetChanged();
+
+                WeekCalendar weekCalendar=getActivity().findViewById(R.id.week_calendar);
+//                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+//                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
+//                ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
+//                gridAdapter.setTaskList(arrayList);
+                GridView gridView=getActivity().findViewById(R.id.gridview);
+                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
+                ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                GridAdapter gridAdapter = new GridAdapter(getContext(), arrayList, LayoutInflater.from(getContext()));
+                gridView.setAdapter(gridAdapter);
+
                 return false;
 
             }
-
-
         });
+
+
     }
 
     public static ArrayList<HashMap<String, Object>> getArrayList(NormalTransaction[] normalTasks) {
