@@ -392,9 +392,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         //添加数据后实时更新
                         curAdapter=calView.getGridAdapter();
                         curAdapter.notifyDataSetChanged();
-                        NormalTransaction[] new_tasks=dbAdapter.queryAllData();
+                        WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
+                        String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                        NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
                         ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
                         curAdapter.setTaskList(arrayList);
+                       /* WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
+                        GridView gridView=findViewById(com.loonggg.weekcalendar.R.id.gridview);
+                        String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                        NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
+                        ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                        GridAdapter gridAdapter = new GridAdapter(this, arrayList, LayoutInflater.from());
+                        gridView.setAdapter(gridAdapter);*/
 
                     }
                     dialog.dismiss();

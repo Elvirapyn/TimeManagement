@@ -46,7 +46,7 @@ public class CalendarView extends  Fragment {
 
         dbAdapter1 = new DBAdapter(getContext());
         dbAdapter1.open();
-        WeekCalendar weekCalendar = getActivity().findViewById(R.id.week_calendar);
+        final WeekCalendar weekCalendar = getActivity().findViewById(R.id.week_calendar);
 
 
         /*System.out.println("被选中的日期为" + curDay);
@@ -73,10 +73,25 @@ public class CalendarView extends  Fragment {
 
                 NormalTransaction tran=(NormalTransaction)taskList.get(position).get("taskList"+position);
                 dbAdapter1.deleteOneData(tran.transactionDate_,tran.startTime_);
-                for(int i=position;i<normalTransactions.length-1;i++)
-                    normalTransactions[i]=normalTransactions[i+1];
-                taskList=getArrayList(normalTransactions);
-                gridAdapter.notifyDataSetChanged();
+
+               //normalTransactions=dbAdapter1.queryWeekData(getWeekofDate(weekCalendar.getTheDayOfSelected()));
+                //for(int i=position;i<normalTransactions.length-1;i++)
+                 //   normalTransactions[i]=normalTransactions[i+1];
+                //taskList=getArrayList(refreshList);
+                //gridAdapter.notifyDataSetChanged();
+
+                /*WeekCalendar weekCalendar=getActivity().findViewById(R.id.week_calendar);
+                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
+                ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
+                gridAdapter.setTaskList(arrayList);*/
+
+                GridView gridView=getActivity().findViewById(R.id.gridview);
+                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
+                ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                GridAdapter gridAdapter = new GridAdapter(getContext(), arrayList, LayoutInflater.from(getContext()));
+                gridView.setAdapter(gridAdapter);
                 /*NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekofdate);
                 ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
                 curAdapter.setTaskList(arrayList);*/
