@@ -105,6 +105,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
        /* WeekCalendar weekCalendar=(WeekCalendar)findViewById(R.id.week_calendar);
         String curDay=weekCalendar.getTheDayOfSelected();*/
 
+
     }
     @Override
     protected void onStart() {
@@ -120,7 +121,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         System.out.println(transactions[i].toString());
             }
         });
+
     }
+
 
     //初始化控件
     private void initView() {
@@ -145,6 +148,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
         }
     }
+
 
     //设置点击菜单的处理事件
     private void Choice_menu(int index) {
@@ -173,7 +177,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
                 break;
         }
-        fragmentTransaction.commit();//提交
+        //fragmentTransaction.commit();//提交
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void hindFragments(FragmentTransaction fragmentTransaction) {
@@ -188,9 +193,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
+        //dbAdapter.close();
+    }
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
         dbAdapter.close();
     }
-
     /*
     平雅霓part
     添加事务*/

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import androidx.fragment.app.Fragment;
 import com.loonggg.weekcalendar.R;
@@ -36,6 +37,7 @@ public class CalendarView extends  Fragment {
         View view = inflater.inflate(R.layout.calendar, container, false);
         return view;
     }
+
 
     @Override
     public void onActivityCreated(Bundle saveInstanceState) {
