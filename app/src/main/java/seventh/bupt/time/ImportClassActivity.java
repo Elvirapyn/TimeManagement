@@ -2,7 +2,10 @@ package seventh.bupt.time;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -17,10 +20,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 
 import com.loonggg.weekcalendar.view.WeekCalendar;
-import seventh.bupt.time.CalendarView;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,8 +33,6 @@ import org.jsoup.select.Elements;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +40,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,13 +48,32 @@ public class ImportClassActivity extends AppCompatActivity {
     private WebView mWebView;
     private Button mButton;
     public DBAdapter dbAdapter;
-    private String start_date="2020-02-24";
+    private String start_date=null;
+    private EditText year;
+    private EditText month;
+    private EditText day;
+    private static Context mContext;
+    private int importflag=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import);
         dbAdapter = new DBAdapter(ImportClassActivity.this);
         dbAdapter.open();
+        mContext = getApplicationContext();
+        year=(EditText)findViewById(R.id.year);
+        month=(EditText)findViewById(R.id.month);
+        day=(EditText)findViewById(R.id.day);
+        mButton=(Button)findViewById(R.id.button);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                importflag=1;
+                start_date=year.getText()+"-"+month.getText()+"-"+day.getText();
+                mWebView.zoomIn();
+            }
+        });
         init();
     }
 
@@ -75,13 +95,7 @@ public class ImportClassActivity extends AppCompatActivity {
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         mWebView.requestFocus();
         mWebView.getSettings().setBuiltInZoomControls(true);
-        mButton=(Button)findViewById(R.id.button);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mWebView.zoomIn();
-            }
-        });
+
         mWebView.setWebViewClient(new WebViewClient() {
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -141,35 +155,68 @@ public class ImportClassActivity extends AppCompatActivity {
             //解析html
             Document doc = Jsoup.parse(html);
             Element table = doc.getElementById("kbtable");
-            Elements trs = table.select("tr");
-            for (int i = 0; i < trs.size() - 1; ++i) {                      //遍历该表格内的所有的<tr> <tr/>
-                Element tr = trs.get(i);                                  // 获取一个tr
-                Elements tds = tr.select("td");                 // 获取该行的所有td节点
-                for (int j = 0; j < tds.size(); ++j) {                   // 选择某一个td节点
-                    String info = "周" + (j + 1) + "，第" + (i) + "节：";
-                    Log.i("week", info);
-                    Log.i("table", info);
-                    Element td = tds.get(j);
-                    // 获取td节点的所有div
-                    Elements divs = td.select("div");
-                    Elements div = divs.select(".kbcontent");
-                    String text = div.get(0).text();
-                    //切分
-                    String test = text.replace('O', ' ');
-                    String[] splits = test.split("\\s+|\t");
-                    for(String ss : splits){
-                        Log.i("table",ss);
-                    }
-                    Log.i("table",test);
-                    //splits=Match(splits);
-                    try {
-                        Cut(splits,j+1,i);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+            if(table==null&&importflag==1){
+                importflag=0;
+                AlertDialog alertDialog = new AlertDialog.Builder(ImportClassActivity.this)
+                        .setTitle("导入课表失败")//标题
+                        .setMessage("请打开课表页面后重新导入")//内容
+                        .setIcon(R.mipmap.ic_launcher)//图标
+                        .create();
+                alertDialog.show();
+            }
+            if(isValidDate(start_date)){//判断输入日期格式合法
+                Elements trs = table.select("tr");
+                for (int i = 0; i < trs.size() - 1; ++i) {                      //遍历该表格内的所有的<tr> <tr/>
+                    Element tr = trs.get(i);                                  // 获取一个tr
+                    Elements tds = tr.select("td");                 // 获取该行的所有td节点
+                    for (int j = 0; j < tds.size(); ++j) {                   // 选择某一个td节点
+                        String info = "周" + (j + 1) + "，第" + (i) + "节：";
+                        Log.i("week", info);
+                        Log.i("table", info);
+                        Element td = tds.get(j);
+                        // 获取td节点的所有div
+                        Elements divs = td.select("div");
+                        Elements div = divs.select(".kbcontent");
+                        String text = div.get(0).text();
+                        //切分
+                        String test = text.replace('O', ' ');
+                        String[] splits = test.split("\\s+|\t");
+                        for(String ss : splits){
+                            Log.i("split",ss);
+                        }
+                        Log.i("table",test);
+                        //splits=Match(splits);
+                        try {
+                            Cut(splits,j+1);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+            }else{//日期不合法弹窗
+                AlertDialog alertDialog1 = new AlertDialog.Builder(ImportClassActivity.this)
+                        .setTitle("日期错误")//标题
+                        .setMessage("请输入'2020-01-01'格式的日期")//内容
+                        .setIcon(R.mipmap.ic_launcher)//图标
+                        .create();
+                alertDialog1.show();
             }
         }
+    }
+    public static boolean isValidDate(String str) {
+        boolean convertSuccess=true;
+        // 指定日期格式为四位年/两位月份/两位日期，注意yyyy/MM/dd区分大小写；
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+        // 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+            format.setLenient(false);
+            format.parse(str);
+        } catch (ParseException e) {
+            // e.printStackTrace();
+// 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
+            convertSuccess=false;
+        }
+        return convertSuccess;
     }
     /*返回所有周数+节数的字符串*/
     private String[] Match(String[] splits){
@@ -188,7 +235,7 @@ public class ImportClassActivity extends AppCompatActivity {
         strs[k]="\0";
         return strs;
     }
-    private void Cut (String[] splits,int zhou,int ri) throws ParseException {
+    private void Cut (String[] splits,int weekday) throws ParseException {
         String week = null;
         int start_week;
         int end_week;
@@ -200,10 +247,11 @@ public class ImportClassActivity extends AppCompatActivity {
         String[] matched=Match(splits);
 
 
+
         for (int i = 0; i < matched.length && matched[i] != "\0"; i++) {//遍历取出的时间信息
             Log.i("week", "splist:______________________");
             //获取信息所在段
-            String str = matched[0];
+            String str = matched[i];
             Log.i("week", "str:" + str);
             //截取周信息
             int min_bracket_left = str.indexOf("(");
@@ -220,9 +268,9 @@ public class ImportClassActivity extends AppCompatActivity {
             Log.i("week", "start week:" + start_week);
             Log.i("week", "end week:" + end_week);
             //将周转换成日期
-            String test_date = "2020-02-24";
-            String date = weekToDate(start_week, test_date, 2);
-            Log.i("week", date);
+            //String test_date = "2020-02-24";
+            //String date = weekToDate(start_week, start_date, 2);
+            //Log.i("week", date);
             //截取节次信息
             int sq_bracket_left;
             int sq_bracket_right;
@@ -248,7 +296,7 @@ public class ImportClassActivity extends AppCompatActivity {
             Log.i("week", "start time:" + startTime);
             Log.i("week", "end timme:" + endTime);
             for(int n=start_week;n<=end_week;n++){
-                String trans_date=weekToDate(n,start_date,zhou);
+                String trans_date=weekToDate(n,start_date,weekday);
                 NormalTransaction transaction=new NormalTransaction(trans_date,"Y",desc,startTime,endTime);
                 if(isConflict(trans_date,startTime,endTime)==false)
                     dbAdapter.insert(transaction);
@@ -256,8 +304,12 @@ public class ImportClassActivity extends AppCompatActivity {
 
             }
             //使得课表更新后立刻在界面上更新,需要测试
-            /*WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
-            GridView gridView=findViewById(com.loonggg.weekcalendar.R.id.gridview);
+           //在一个activity获取另一个activity的控件
+           /* LayoutInflater factory=LayoutInflater.from(ImportClassActivity.this);
+            View layout=factory.inflate(R.layout.calendar,null);
+            WeekCalendar weekCalendar=layout.findViewById(R.id.week_calendar);
+            View layout2=factory.inflate(R.layout.view_calender,null);
+            GridView gridView=layout2.findViewById(com.loonggg.weekcalendar.R.id.gridview);
             String dayofSelected=weekCalendar.getTheDayOfSelected();
             String[] weekDate=CalendarView.getWeekofDate(dayofSelected);
             NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
@@ -266,9 +318,10 @@ public class ImportClassActivity extends AppCompatActivity {
             gridView.setAdapter(gridAdapter);*/
 
         }
-
-
     }
+
+
+
 
 
     /*得到某年某周的第一天*/
@@ -284,7 +337,7 @@ public class ImportClassActivity extends AppCompatActivity {
     }
     /*取得指定日期所在周的第一天*/
     public Calendar getFirstDayOfWeek(Date date) {
-        java.text.SimpleDateFormat sdf = new SimpleDateFormat("yyyyMdd");
+        java.text.SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Calendar c = new GregorianCalendar();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.setTime(date);
@@ -294,7 +347,7 @@ public class ImportClassActivity extends AppCompatActivity {
     /* 给出教学周周数，学期开始日期，周几，返回日期*/
     private String weekToDate(int week,String start_date,int day){
         // String start_date = "2020-02-24";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-M-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
             date = format.parse(start_date);
@@ -309,7 +362,7 @@ public class ImportClassActivity extends AppCompatActivity {
         //System.out.println(calendar.get(Calendar.WEEK_OF_YEAR));
         Calendar monsday=getFirstDayOfWeek("2020",start_num+week-1);
         monsday.add(Calendar.DAY_OF_YEAR,day-1);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String result = sdf.format(monsday.getTime());
         return result;
     }

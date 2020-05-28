@@ -39,7 +39,7 @@ import seventh.bupt.time.Alarm.AlarmService;
 import seventh.bupt.time.Alarm.Todo;
 
 import com.loonggg.weekcalendar.view.WeekCalendar;
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+public class MainActivity extends FragmentActivity implements View.OnClickListener{
     /*
     郭正鑫
     界面
@@ -105,6 +105,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
        /* WeekCalendar weekCalendar=(WeekCalendar)findViewById(R.id.week_calendar);
         String curDay=weekCalendar.getTheDayOfSelected();*/
 
+
     }
     @Override
     protected void onStart() {
@@ -120,7 +121,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         System.out.println(transactions[i].toString());
             }
         });
+
     }
+
 
     //初始化控件
     private void initView() {
@@ -146,6 +149,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+
     //设置点击菜单的处理事件
     private void Choice_menu(int index) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -156,10 +160,28 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if(calView ==null){
                     calView = new CalendarView();
                     fragmentTransaction.add(R.id.content, calView);
+                    //点击后可以显示当前的事务列表
+                    /*WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
+                    GridView gridView=findViewById(com.loonggg.weekcalendar.R.id.gridview);
+                    String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                    NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
+                    ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                    GridAdapter gridAdapter = new GridAdapter(gridView.getContext(), arrayList, LayoutInflater.from(gridView.getContext()));
+                    gridView.setAdapter(gridAdapter);*/
+
                     //curAdapter=calView.getGridAdapter();
                 }else{
                     //不为空，显示
                     fragmentTransaction.show(calView);
+                    //点击后可以显示当前的事务列表
+                    WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
+                    GridView gridView=findViewById(com.loonggg.weekcalendar.R.id.gridview);
+                    String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+                    NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
+                    ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
+                    GridAdapter gridAdapter = new GridAdapter(gridView.getContext(), arrayList, LayoutInflater.from(gridView.getContext()));
+                    gridView.setAdapter(gridAdapter);
+
                 }
                 break;
             case 1:
@@ -173,7 +195,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
                 break;
         }
-        fragmentTransaction.commit();//提交
+        //fragmentTransaction.commit();//提交
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void hindFragments(FragmentTransaction fragmentTransaction) {
@@ -188,9 +211,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
+        //dbAdapter.close();
+    }
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
         dbAdapter.close();
     }
-
     /*
     平雅霓part
     添加事务*/
@@ -366,13 +394,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         }
                     }
                 }
+
                 //检测是否有冲突
                 for(int i=0;i<dateList.size();i++){
+                    String dateListItem = dateList.get(i);
+                    String num[] = dateListItem.split("-");
+                    String newdateItem = num[0];
+                    if(Integer.parseInt(num[1])/10==0)newdateItem = newdateItem +"-0"+num[1];  //月份是一位数
+                    else  newdateItem = newdateItem + "-"+num[1];
+                    if(Integer.parseInt(num[2])/10==0)newdateItem = newdateItem +"-0"+num[2];  //月份是一位数
+                    else  newdateItem = newdateItem + "-"+num[2];
+                    dateList.set(i,newdateItem);
                     if(isConflict(dateList.get(i),start_time,end_time)) {
                         conflictflag=1;
                         break;
                     }
                 }
+
                 //没有冲突则插入数据库
                 if(conflictflag==0){
                     for(int i=0;i<dateList.size();i++){
@@ -390,20 +428,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         setService(todo,true);
 
                         //添加数据后实时更新
-                        curAdapter=calView.getGridAdapter();
+                        /*curAdapter=calView.getGridAdapter();
                         curAdapter.notifyDataSetChanged();
                         WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
                         String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
                         NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
                         ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
-                        curAdapter.setTaskList(arrayList);
-                       /* WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
+                        curAdapter.setTaskList(arrayList);*/
+                        WeekCalendar weekCalendar=findViewById(R.id.week_calendar);
                         GridView gridView=findViewById(com.loonggg.weekcalendar.R.id.gridview);
                         String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
                         NormalTransaction[] new_tasks=dbAdapter.queryWeekData(weekDate);
                         ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
-                        GridAdapter gridAdapter = new GridAdapter(this, arrayList, LayoutInflater.from());
-                        gridView.setAdapter(gridAdapter);*/
+                        GridAdapter gridAdapter = new GridAdapter(gridView.getContext(), arrayList, LayoutInflater.from(gridView.getContext()));
+                        gridView.setAdapter(gridAdapter);
 
                     }
                     dialog.dismiss();

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import androidx.fragment.app.Fragment;
 import com.loonggg.weekcalendar.R;
@@ -46,7 +47,7 @@ public class CalendarView extends  Fragment {
 
         dbAdapter1 = new DBAdapter(getContext());
         dbAdapter1.open();
-        final WeekCalendar weekCalendar = getActivity().findViewById(R.id.week_calendar);
+        WeekCalendar weekCalendar = getActivity().findViewById(R.id.week_calendar);
 
 
         /*System.out.println("被选中的日期为" + curDay);
@@ -73,28 +74,23 @@ public class CalendarView extends  Fragment {
 
                 NormalTransaction tran=(NormalTransaction)taskList.get(position).get("taskList"+position);
                 dbAdapter1.deleteOneData(tran.transactionDate_,tran.startTime_);
-
-               //normalTransactions=dbAdapter1.queryWeekData(getWeekofDate(weekCalendar.getTheDayOfSelected()));
-                //for(int i=position;i<normalTransactions.length-1;i++)
-                 //   normalTransactions[i]=normalTransactions[i+1];
-                //taskList=getArrayList(refreshList);
+                for(int i=position;i<normalTransactions.length-1;i++)
+                    normalTransactions[i]=normalTransactions[i+1];
+                taskList=getArrayList(normalTransactions);
                 //gridAdapter.notifyDataSetChanged();
 
-                /*WeekCalendar weekCalendar=getActivity().findViewById(R.id.week_calendar);
-                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
-                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
-                ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
-                gridAdapter.setTaskList(arrayList);*/
-
+                WeekCalendar weekCalendar=getActivity().findViewById(R.id.week_calendar);
+//                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
+//                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
+//                ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
+//                gridAdapter.setTaskList(arrayList);
                 GridView gridView=getActivity().findViewById(R.id.gridview);
                 String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
                 NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
                 ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
                 GridAdapter gridAdapter = new GridAdapter(getContext(), arrayList, LayoutInflater.from(getContext()));
                 gridView.setAdapter(gridAdapter);
-                /*NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekofdate);
-                ArrayList<HashMap<String, Object>> arrayList=calView.getArrayList(new_tasks);
-                curAdapter.setTaskList(arrayList);*/
+
                 return false;
 
             }
@@ -137,7 +133,7 @@ public class CalendarView extends  Fragment {
           //System.out.println("年"+cal.getTime());
           //System.out.println("月"+curDate.getMonth()+1);
           //System.out.println("月"+curDate.getDate());
-          DateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd", Locale.ENGLISH);
+          DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
           cal.add(Calendar.DATE,-weekday-1);//获取当前周的第一天
           weekofDate[0]=dateFormat.format(cal.getTime());
           for(int i=0;i<7;i++){
