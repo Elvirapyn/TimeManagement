@@ -86,6 +86,7 @@ public class ImportClassActivity extends AppCompatActivity {
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setDisplayZoomControls(false);
         // mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         mWebView.getSettings().setAllowFileAccess(true);
         mWebView.getSettings().setAppCacheEnabled(true);
@@ -171,8 +172,8 @@ public class ImportClassActivity extends AppCompatActivity {
                     Elements tds = tr.select("td");                 // 获取该行的所有td节点
                     for (int j = 0; j < tds.size(); ++j) {                   // 选择某一个td节点
                         String info = "周" + (j + 1) + "，第" + (i) + "节：";
-                        Log.i("week", info);
-                        Log.i("table", info);
+                        //Log.i("week", info);
+                        //Log.i("table", info);
                         Element td = tds.get(j);
                         // 获取td节点的所有div
                         Elements divs = td.select("div");
@@ -181,10 +182,10 @@ public class ImportClassActivity extends AppCompatActivity {
                         //切分
                         String test = text.replace('O', ' ');
                         String[] splits = test.split("\\s+|\t");
-                        for(String ss : splits){
-                            Log.i("split",ss);
-                        }
-                        Log.i("table",test);
+                        //for(String ss : splits){
+                          //  Log.i("split",ss);
+                       // }
+                       // Log.i("table",test);
                         //splits=Match(splits);
                         try {
                             Cut(splits,j+1);
@@ -193,10 +194,16 @@ public class ImportClassActivity extends AppCompatActivity {
                         }
                     }
                 }
+                AlertDialog alertSuccess = new AlertDialog.Builder(ImportClassActivity.this)
+                        .setTitle("导入成功")//标题
+                        .setMessage("成功导入课表，请返回日历界面查看吧！")//内容
+                        .setIcon(R.mipmap.ic_launcher)//图标
+                        .create();
+                alertSuccess.show();
             }else{//日期不合法弹窗
                 AlertDialog alertDialog1 = new AlertDialog.Builder(ImportClassActivity.this)
                         .setTitle("日期错误")//标题
-                        .setMessage("请输入'2020-01-01'格式的日期")//内容
+                        .setMessage("请输入正确的开始日期")//内容
                         .setIcon(R.mipmap.ic_launcher)//图标
                         .create();
                 alertDialog1.show();
@@ -240,23 +247,25 @@ public class ImportClassActivity extends AppCompatActivity {
         int start_week;
         int end_week;
         String desc="";
-        for(String s:splits){
+        /*for(String s:splits){
             desc+=s;
-        }
+        }*/
+        if(splits.length>0)
+            desc+=splits[0]+"\n"+splits[splits.length-1];
 
         String[] matched=Match(splits);
 
 
 
         for (int i = 0; i < matched.length && matched[i] != "\0"; i++) {//遍历取出的时间信息
-            Log.i("week", "splist:______________________");
+            //Log.i("week", "splist:______________________");
             //获取信息所在段
             String str = matched[i];
-            Log.i("week", "str:" + str);
+            //Log.i("week", "str:" + str);
             //截取周信息
             int min_bracket_left = str.indexOf("(");
             week = str.substring(0, min_bracket_left);
-            Log.i("week", week);
+            //Log.i("week", week);
             int strip = week.indexOf("-");
             if (strip > 0) {//12-18（周）
                 start_week = Integer.parseInt(week.substring(0, strip));
@@ -265,8 +274,8 @@ public class ImportClassActivity extends AppCompatActivity {
                 start_week = Integer.parseInt(week);
                 end_week = start_week;
             }
-            Log.i("week", "start week:" + start_week);
-            Log.i("week", "end week:" + end_week);
+           // Log.i("week", "start week:" + start_week);
+            //Log.i("week", "end week:" + end_week);
             //将周转换成日期
             //String test_date = "2020-02-24";
             //String date = weekToDate(start_week, start_date, 2);
@@ -291,17 +300,15 @@ public class ImportClassActivity extends AppCompatActivity {
             String[] end = {"08:45", "09:35", "10:35", "11:25", "12:15", "13:45", "14:35", "15:30", "16:25", "17:20", "18:10", "19:15", "20:05", "20:55"};
             String startTime = start[start_class - 1];
             String endTime = end[end_class - 1];
-            Log.i("week", "start class:" + start_class);
-            Log.i("week", "end class:" + end_class);
-            Log.i("week", "start time:" + startTime);
-            Log.i("week", "end timme:" + endTime);
+            //Log.i("week", "start class:" + start_class);
+            //Log.i("week", "end class:" + end_class);
+           // Log.i("week", "start time:" + startTime);
+            //Log.i("week", "end timme:" + endTime);
             for(int n=start_week;n<=end_week;n++){
                 String trans_date=weekToDate(n,start_date,weekday);
                 NormalTransaction transaction=new NormalTransaction(trans_date,"Y",desc,startTime,endTime);
                 if(isConflict(trans_date,startTime,endTime)==false)
                     dbAdapter.insert(transaction);
-
-
             }
             //使得课表更新后立刻在界面上更新,需要测试
            //在一个activity获取另一个activity的控件
@@ -358,7 +365,7 @@ public class ImportClassActivity extends AppCompatActivity {
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTime(date);
         int start_num=calendar.get(Calendar.WEEK_OF_YEAR);
-        Log.i("parse", String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)));
+       // Log.i("parse", String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)));
         //System.out.println(calendar.get(Calendar.WEEK_OF_YEAR));
         Calendar monsday=getFirstDayOfWeek("2020",start_num+week-1);
         monsday.add(Calendar.DAY_OF_YEAR,day-1);
