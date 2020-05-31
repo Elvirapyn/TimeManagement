@@ -47,5 +47,7 @@ public class Util implements TipRelativeLayout.AnimationEndCallback {
     @Override
     public void onAnimationEnd() {
         reportVideoPopwindow.dismiss();//动画结束，隐藏popupwindow
+        AlertActivity.alertActivity.finish();
     }
+
 }

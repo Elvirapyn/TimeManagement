@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 import seventh.bupt.time.Alarm.view.AlertActivity;
 
 
@@ -28,10 +27,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         //向AlertActivity传参
         toAlertAct.putExtra("todo", intent.getStringExtra("todo"));
         toAlertAct.putExtra("remindTypeCode", intent.getIntExtra("remindTypeCode", 0));
-        Log.d(TAG, "onReceive: " + intent.getStringExtra("todo") + intent.getIntExtra("remindTypeCode", 0));
+        toAlertAct.putExtra("date", intent.getStringExtra("date"));
+        toAlertAct.putExtra("time", intent.getStringExtra("time"));
+
+        Log.d(TAG, "onReceive: " + intent.getStringExtra("date") + intent.getIntExtra("time", 0));
         //创建新的alarm
         toAlertAct.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         context.startActivity(toAlertAct);
     }
 }

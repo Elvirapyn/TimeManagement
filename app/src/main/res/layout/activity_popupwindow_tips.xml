@@ -5,7 +5,7 @@
     android:orientation="vertical"
     >
 
-    <bupt.wqm.notice.Alarm.view.TipRelativeLayout
+    <seventh.bupt.time.Alarm.view.TipRelativeLayout
         android:id="@+id/rl_tips"
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -34,6 +34,6 @@
             android:layout_toRightOf="@+id/iv_video_image"
             android:text="你有任务了"
             android:textColor="#ffffff" />
-    </bupt.wqm.notice.Alarm.view.TipRelativeLayout>
+    </seventh.bupt.time.Alarm.view.TipRelativeLayout>
 
 </LinearLayout>

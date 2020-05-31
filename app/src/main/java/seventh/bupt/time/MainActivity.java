@@ -45,6 +45,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     界面
     */
 
+    public static MainActivity mainActivity;
     //三个Fragment对象
     private CalendarView calView;
     private personal_center per;
@@ -81,6 +82,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private final String TAG = this.getClass().getSimpleName();
 
+    View popView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
        /* WeekCalendar weekCalendar=(WeekCalendar)findViewById(R.id.week_calendar);
         String curDay=weekCalendar.getTheDayOfSelected();*/
 
-
+       mainActivity = this;
     }
     @Override
     protected void onStart() {
@@ -123,7 +126,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         });
 
     }
-
 
     //初始化控件
     private void initView() {
@@ -148,7 +150,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
         }
     }
-
 
     //设置点击菜单的处理事件
     private void Choice_menu(int index) {
@@ -211,6 +212,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
+        //dbAdapter.close();
+    }
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart");
+        Choice_menu(0);//初始化时页面加载第一个日历选项
         //dbAdapter.close();
     }
     @Override
@@ -615,7 +623,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void loadDataFromDatabase() {
         Log.d(TAG, "查询数据库");
 
-
         NormalTransaction[] noramalTasks = dbAdapter.queryNotify();
         //遍历normalTasks 启动alarm
         //TEST DATA  此处应改为下方从SQL数据库查询数据
@@ -628,8 +635,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 todo.setTime(cursor.startTime_);
                 todo.setCode(0);
                 Log.d(TAG, "load(): " + todo.getTodo());
-                //todoLists.add(todo);
-                setService(todo, true);
+                //判断是否设置闹钟
+                if(isSetAlarm(cursor.startTime_,cursor.transactionDate_)){
+                    setService(todo, true);
+                    Log.d(TAG, "Time:" + cursor.startTime_);
+                }
+                else Log.d(TAG, "Not Set " + cursor.startTime_);
             }
         }
     }
@@ -643,4 +654,31 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         todo.setTime(transaction.startTime_);
         setService(todo,false);
      */
+    public boolean isSetAlarm(String time, String date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+
+        String[] date_alarm,time_alarm;
+        int year, month, day, hour, minute;
+        date_alarm = date.split("-");
+        year = Integer.parseInt(date_alarm[0]);
+        month = Integer.parseInt(date_alarm[1]);
+        day = Integer.parseInt(date_alarm[2]);
+        time_alarm = time.split(":");
+        hour = Integer.parseInt(time_alarm[0]);
+        minute = Integer.parseInt(time_alarm[1]);
+        calendar.set(year, (month-1), day, hour, minute, 0);
+        long alarmMillis = calendar.getTimeInMillis();
+
+        Calendar sys_calendar = Calendar.getInstance();
+        long sysMillis = sys_calendar.getTimeInMillis();
+
+        Log.d(TAG, "AlarmMillis: " + alarmMillis+"   SysMillis: "+sysMillis);
+
+        if(alarmMillis>=sysMillis)
+            return true;
+        else return false;
+
+    }
 }

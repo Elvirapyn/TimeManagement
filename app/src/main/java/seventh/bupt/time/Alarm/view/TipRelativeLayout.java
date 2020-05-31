@@ -1,7 +1,9 @@
 package seventh.bupt.time.Alarm.view;
 
+import android.app.Service;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AlphaAnimation;

@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
-
 import java.util.Calendar;
 
 public class AlarmService extends Service {
@@ -28,8 +26,8 @@ public class AlarmService extends Service {
     private boolean isSetAlarm;
 
     //保存闹钟时间信息
-    private String[] date;
-    private String[] time;
+    private String[] date_alarm;
+    private String[] time_alarm;
     private int year;
     private int month;
     private int day;
@@ -38,6 +36,8 @@ public class AlarmService extends Service {
 
     private String todo;
     private int code;
+    private String time;
+    private String date;
 
     @Override
     public void onCreate() {
@@ -46,24 +46,22 @@ public class AlarmService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         System.out.println();
         //解析intent中传递的data信息
-        date = intent.getStringExtra("date").split("-");
-        year = Integer.parseInt(date[0]);
-        month = Integer.parseInt(date[1]);
-        day = Integer.parseInt(date[2]);
-        time = intent.getStringExtra("time").split(":");
-        hour = Integer.parseInt(time[0]);
-        minute = Integer.parseInt(time[1]);
+        date_alarm = intent.getStringExtra("date").split("-");
+        year = Integer.parseInt(date_alarm[0]);
+        month = Integer.parseInt(date_alarm[1]);
+        day = Integer.parseInt(date_alarm[2]);
+        time_alarm = intent.getStringExtra("time").split(":");
+        hour = Integer.parseInt(time_alarm[0]);
+        minute = Integer.parseInt(time_alarm[1]);
 
         todo = intent.getStringExtra("todo");
         code = intent.getIntExtra("remindTypeCode", 0);
+        time = intent.getStringExtra("time");
+        date = intent.getStringExtra("date");
+
         isSetAlarm = intent.getBooleanExtra("isSetAlarm", true);
         Log.d(TAG, "onStartCommand: " + todo + code);
         alarmBinder = new AlarmBinder();
@@ -71,7 +69,7 @@ public class AlarmService extends Service {
         //true：添加alarm
         // false：删除alarm
         if (isSetAlarm) {
-            alarmBinder.setAlarm(todo, code);
+            alarmBinder.setAlarm(todo, code, time, date);
         } else {
             alarmBinder.cancelAlarm(todo, intent.getStringExtra("date"), intent.getStringExtra("time"), code);
         }
@@ -80,13 +78,11 @@ public class AlarmService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     //闹钟管理
     class AlarmBinder extends Binder {
@@ -97,7 +93,7 @@ public class AlarmService extends Service {
         private int alarmCount = 10;
 
        //添加闹钟
-        public void setAlarm(String todo, int code) {
+        public void setAlarm(String todo, int code, String time,String date) {
             //todo:事务名称  code：提醒类型（可以有响铃+振动） 实现时未分类，使用了响铃+振动
             alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
             calendar = Calendar.getInstance();
@@ -108,6 +104,8 @@ public class AlarmService extends Service {
             intent = new Intent("android.intent.action.SET_TIMER");
             intent.putExtra("todo", todo);
             intent.putExtra("remindTypeCode", code);
+            intent.putExtra("time", time);
+            intent.putExtra("date", date);
             Log.d(TAG, "setAlarm: " + intent.getStringExtra("todo") + intent.getIntExtra("remindTypeCode", 0));
             calendar.set(year, (month-1), day, hour, minute, 0);
 
