@@ -34,8 +34,8 @@ public class GridAdapter extends BaseAdapter {
     private ArrayList<HashMap<String, Object>> taskList ;
     private LayoutInflater layoutInflater;
     private Context myContext;
-    int parentHeight=4200;
-    int parentWidth=1296;//屏幕的长宽，到最后展示的时候要根据相关机型进行调整
+    int parentHeight=3600;
+    int parentWidth=957;//屏幕的长宽，到最后展示的时候要根据相关机型进行调整
 
     float maxHeight[]=new float[100];//获取每个iter内的最后一件事务的长度，作为下一个iter的偏移量
 
@@ -104,22 +104,21 @@ public class GridAdapter extends BaseAdapter {
         viewHolder.mTextView = convertView.findViewById(R.id.grid_item);
 
         //这段代码用来获取控件的实际长宽，先保留，最后调试时用
-        /*parent.getViewTreeObserver().addOnGlobalLayoutListener(
+        parent.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
 
                     public void onGlobalLayout() {
 
                         parentHeight = parent.getHeight();
                         parentWidth = parent.getWidth();
-                        //System.out.println("刚调整宽度" + parentWidth);
-                       // System.out.println("刚调整高度" + parentHeight);
-                       // System.out.println("加载完成后的gridview高度");
+                        System.out.println("刚调整宽度" + parentWidth);
+                        System.out.println("刚调整高度" + parentHeight);
+                        System.out.println("加载完成后的gridview高度");
 
 
-                       /* getViewTreeObserver()
-                                .removeGlobalOnLayoutListener(this);
+                       parent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
-                });*/
+                });
 
         float caculatedHeight = (float)parentHeight * duration / 24;//获取到相对的高度
 
@@ -190,16 +189,18 @@ public class GridAdapter extends BaseAdapter {
     public String getRandomColor(int position){
 
         ArrayList<String> randomColor=new ArrayList<String>();
-        randomColor.add("#FFE4E1");//浅粉色
-        randomColor.add("#EEAEEE");//浅紫色
-        randomColor.add("#FFEFDB");//淡黄色
-        randomColor.add("#E0FFFF");//浅蓝色
-        randomColor.add("#9AFF9A");//草绿色
-        randomColor.add("#87CEFF");//天蓝色
-        randomColor.add("#7FFFD4");//青色
-        randomColor.add("#EEAD0E");//橙色
+        randomColor.add("#99CCCC");
+        randomColor.add("#FFCC99");
+        randomColor.add("#FFCCCC");
+        randomColor.add("#99CC33");
+        randomColor.add("#FFCC00");
+        randomColor.add("#99CCCC");
+        randomColor.add("#CC99CC");
+        randomColor.add("#FF9933");
+        randomColor.add("#FF9999");
+        randomColor.add("#3399CC");
 
-        return randomColor.get(position%8);
+        return randomColor.get(position%10);
 
 
     }

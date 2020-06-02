@@ -22,16 +22,16 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="150dp"
-            android:layout_marginTop="300dp"
+            android:layout_marginLeft="300dp"
+            android:layout_marginTop="600dp"
             android:background="@mipmap/add" />
 
     </FrameLayout>
     <!--底部导航栏-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="#FFFFFF">
+        android:layout_height="40dp"
+        android:background="@drawable/textview_border">
 
         <RelativeLayout
             android:id="@+id/cal_rl"
@@ -51,7 +51,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
                     android:text="日历"
-                    android:textColor="#7597B3"/>
+                    android:textColor="#7597B3"
+                    android:textSize="16dp"/>
             </LinearLayout>
         </RelativeLayout>
 
@@ -72,7 +73,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
                     android:text="个人中心"
-                    android:textColor="#7597B3"/>
+                    android:textColor="#7597B3"
+                    android:textSize="16dp"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

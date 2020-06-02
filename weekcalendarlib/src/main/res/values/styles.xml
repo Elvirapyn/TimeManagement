@@ -6,16 +6,27 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:alertDialogTheme">@style/MyDialogStyle</item>
     </style>
 
     <!--日历中左侧时间的设定-->
-<style name="cal_time">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">50dp</item>
-    <item name="android:gravity">top</item>
-    <item name="android:textSize">12dp</item>
+    <style name="cal_time">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">top</item>
+        <item name="android:textSize">12dp</item>
+    </style>
 
-</style>
-
-
+    <style name="MyDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--是否显示title-->
+        <item name="android:windowNoTitle">true</item>
+        <!--dialog之外没有焦点的区域是否罩上黑色半透明-->
+        <item name="android:background">@color/color_white</item>
+        <item name="android:textColor">@color/color_10</item>
+        <item name="android:textSize">20dp</item>
+        <!-- 这里是修改顶部标题背景颜色，具体颜色自己定，可以是图片 -->
+        <item name="android:topDark">@color/color_10</item>
+        <!-- 这里是修改内容区域背景颜色 -->
+        <item name="android:layout_gravity">center</item>
+    </style>
 </resources>

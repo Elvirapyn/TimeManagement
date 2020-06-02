@@ -146,7 +146,8 @@ public class ImportClassActivity extends AppCompatActivity {
                 mWebView.reload();
             }
         });
-        mWebView.loadUrl("https://vpn.bupt.edu.cn/");
+//        mWebView.loadUrl("https://vpn.bupt.edu.cn/");
+        mWebView.loadUrl(" https://webvpn.bupt.edu.cn/login");
     }
 
     public final class InJavaScriptLocalObj {

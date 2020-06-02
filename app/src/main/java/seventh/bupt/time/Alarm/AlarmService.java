@@ -97,7 +97,7 @@ public class AlarmService extends Service {
                 .setContentText("Service is Running!")
                 .setContentIntent(p_intent)
                 .build();
-        startForeground(0x1989, notification);   // notification ID: 0x1982, you can name it as you will.
+        //startForeground(0x1989, notification);   // notification ID: 0x1982, you can name it as you will.
     }
 
 

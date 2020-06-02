@@ -1,5 +1,8 @@
 package seventh.bupt.time;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import com.loonggg.weekcalendar.R;
 import com.loonggg.weekcalendar.view.WeekCalendar;
@@ -67,11 +73,24 @@ public class CalendarView extends  Fragment {
         gridAdapter = new GridAdapter(getContext(), taskList, LayoutInflater.from(getContext()));
         gridView.setAdapter(gridAdapter);
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView,  View view, int position, long id) {
+                NormalTransaction tran=(NormalTransaction)taskList.get(position).get("taskList"+position);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                dialog.setIcon(R.drawable.detail);
+                dialog.setTitle("事务详情");
+                dialog.setMessage(tran.description_+"\n事务日期："+tran.transactionDate_+"\n开始时间："+tran.startTime_
+                        +"\n结束时间："+tran.endTime_);
+                dialog.show();
+
+            }
+        });
+
 
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
                 NormalTransaction tran=(NormalTransaction)taskList.get(position).get("taskList"+position);
                 dbAdapter1.deleteOneData(tran.transactionDate_,tran.startTime_);
                 for(int i=position;i<normalTransactions.length-1;i++)
@@ -90,6 +109,7 @@ public class CalendarView extends  Fragment {
                 ArrayList<HashMap<String, Object>> arrayList= CalendarView.getArrayList(new_tasks);
                 GridAdapter gridAdapter = new GridAdapter(getContext(), arrayList, LayoutInflater.from(getContext()));
                 gridView.setAdapter(gridAdapter);
+                Toast.makeText(getActivity().getBaseContext(), "删除成功", Toast.LENGTH_SHORT).show();
 
                 return false;
 
