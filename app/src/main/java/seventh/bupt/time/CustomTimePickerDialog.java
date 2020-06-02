@@ -16,7 +16,7 @@ public class CustomTimePickerDialog extends TimePickerDialog
 {
     final OnTimeSetListener mCallback;
     TimePicker mTimePicker;
-    final int increment;//调整跳过的滚动距离，10的话就是每十个一显示
+    final int increment; //调整跳过的滚动距离，10的话就是每十个一显示
     //    private String[] name=new String[]{"00","10","20","30","40","50"};
     private String[] name;//与间隔对应的数据
     public CustomTimePickerDialog(Context context, int themeResId, OnTimeSetListener callBack,

@@ -636,7 +636,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 todo.setCode(0);
                 Log.d(TAG, "load(): " + todo.getTodo());
                 //判断是否设置闹钟
-                if(isSetAlarm(cursor.startTime_,cursor.transactionDate_)){
+                if(isSetAlarm(cursor.startTime_,cursor.transactionDate_)&cursor.isNotify_=="Y"){
                     setService(todo, true);
                     Log.d(TAG, "Time:" + cursor.startTime_);
                 }

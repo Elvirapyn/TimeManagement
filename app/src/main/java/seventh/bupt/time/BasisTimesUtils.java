@@ -186,8 +186,9 @@ public class BasisTimesUtils {
      * @param onTimerPickerListener 返回
      */
     public static void showTimerPickerDialog(Context context, int themeId, String title, int hourOfDay,
-                                             int minute, boolean is24HourView, final OnTimerPickerListener onTimerPickerListener, int interval, String[] name) {
-
+                                             int minute, boolean is24HourView,
+                                             final OnTimerPickerListener onTimerPickerListener,
+                                             int interval, String[] name) {
 
         //----
         CustomTimePickerDialog dialog = new CustomTimePickerDialog(context, themeId, new TimePickerDialog.OnTimeSetListener() {
