@@ -1,15 +1,21 @@
 package seventh.bupt.time.Alarm;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
 import java.util.Calendar;
+
+import seventh.bupt.time.R;
 
 public class AlarmService extends Service {
 
@@ -73,10 +79,27 @@ public class AlarmService extends Service {
         } else {
             alarmBinder.cancelAlarm(todo, intent.getStringExtra("date"), intent.getStringExtra("time"), code);
         }
-
-        //onDestroy();
+        foregroundRun();
+        flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
+
+    /**
+     * 使服务更好的运行在后台， 不被销毁（手机内存低时不优先销毁）
+     */
+    private void foregroundRun() {
+        PendingIntent p_intent = PendingIntent.getActivity(this, 0,
+                new Intent(this, AlarmService.class), 0);
+        Notification notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("ina-ina")
+                .setContentTitle("Ina_Service")
+                .setContentText("Service is Running!")
+                .setContentIntent(p_intent)
+                .build();
+        startForeground(0x1989, notification);   // notification ID: 0x1982, you can name it as you will.
+    }
+
 
     @Nullable
     @Override
@@ -100,29 +123,33 @@ public class AlarmService extends Service {
             calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                     calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
 
+
             //设置闹钟
             intent = new Intent("android.intent.action.SET_TIMER");
+            intent.setPackage(getPackageName());
             intent.putExtra("todo", todo);
             intent.putExtra("remindTypeCode", code);
             intent.putExtra("time", time);
             intent.putExtra("date", date);
             Log.d(TAG, "setAlarm: " + intent.getStringExtra("todo") + intent.getIntExtra("remindTypeCode", 0));
             calendar.set(year, (month-1), day, hour, minute, 0);
+            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent. FLAG_INCLUDE_STOPPED_PACKAGES);
 
             //getBroadcast：打开一个广播组件，向BroadcastReceiver广播
             // pendingIntent保证在app down的时候也可以执行闹钟  （异步执行）
             pendingIntent = PendingIntent.getBroadcast(context, alarmCount++, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent. FLAG_INCLUDE_STOPPED_PACKAGES);
+            //intent.putExtra("receive",)
 
             //让定时任务的触发时间从1970年1月1日0点开始算起，但会唤醒CPU  第二个参数：距离目标时间的差值
             //int time = 20 * 1000;
             //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time, pendingIntent);
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            Log.d(TAG,calendar.getTime()+"!!!!!!!!!");
             intent = null;
             pendingIntent = null;
             Log.d(TAG,"Send Broadcast Success");
+
         }
 
         //删除闹钟：响铃结束+手动删除
