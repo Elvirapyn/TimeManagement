@@ -83,7 +83,6 @@ public class CalendarView extends  Fragment {
                 dialog.setMessage(tran.description_+"\n事务日期："+tran.transactionDate_+"\n开始时间："+tran.startTime_
                         +"\n结束时间："+tran.endTime_);
                 dialog.show();
-
             }
         });
 
@@ -99,10 +98,6 @@ public class CalendarView extends  Fragment {
                 //gridAdapter.notifyDataSetChanged();
 
                 WeekCalendar weekCalendar=getActivity().findViewById(R.id.week_calendar);
-//                String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
-//                NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);
-//                ArrayList<HashMap<String, Object>> arrayList=CalendarView.getArrayList(new_tasks);
-//                gridAdapter.setTaskList(arrayList);
                 GridView gridView=getActivity().findViewById(R.id.gridview);
                 String[] weekDate=CalendarView.getWeekofDate(weekCalendar.getTheDayOfSelected());
                 NormalTransaction[] new_tasks=dbAdapter1.queryWeekData(weekDate);

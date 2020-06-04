@@ -117,7 +117,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 showDialog();
-//                dbAdapter.deleteAllData();
+                //dbAdapter.deleteAllData();
                 NormalTransaction []transactions = dbAdapter.queryAllData();
                 if(transactions!=null)
                     for (int i = 0; i < transactions.length; i++)
